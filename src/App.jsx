@@ -1,10 +1,13 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2 } from "lucide-react";
+import { MessageCircle, Instagram, Facebook, Send, Globe2 } from "lucide-react";
+import brandLogo from "./assets/brand-logo.jpg";
+import tiktokLogo from "./assets/tiktok-logo.webp";
 
 // --- Contact links ---
-const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=963986008935&text&context=Afc0KBO4bwwHvFi_D8ZupdB4AENHBwa8Mq73NKuK4sISOvgMaVCaz3PfLBrfifcXJVHlOrAlda216iEaOnHa_7gObtH88Yk0y5OPyN4ddEzctm6qxhSIS5wdWAx2VqeyrVl_ovApL6abvPPjio-LxzRhRA&source&app=facebook";
+const WHATSAPP_URL =
+  "https://api.whatsapp.com/send?phone=963986008935&text&context=Afc0KBO4bwwHvFi_D8ZupdB4AENHBwa8Mq73NKuK4sISOvgMaVCaz3PfLBrfifcXJVHlOrAlda216iEaOnHa_7gObtH88Yk0y5OPyN4ddEzctm6qxhSIS5wdWAx2VqeyrVl_ovApL6abvPPjio-LxzRhRA&source&app=facebook";
 const TELEGRAM_URL = "https://t.me/frame_surge";
 
 // === Your 10 Google Drive links (updated) ===
@@ -75,12 +78,30 @@ export default function FuturisticPortfolio() {
       <header className="sticky top-0 z-40 backdrop-blur bg-black/30 border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="logo" className="h-9 w-9 rounded-full ring-2 ring-white/20" onError={(e)=>{e.currentTarget.style.display='none'}}/>
+            <img
+              src={brandLogo}
+              alt="Frame Surge logo"
+              className="h-9 w-9 rounded-xl ring-2 ring-white/20 object-cover"
+            />
             <span className="text-lg font-semibold tracking-wide">Frame Surge</span>
           </div>
           <div className="flex items-center gap-3">
-            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100">WhatsApp</a>
-            <a href={TELEGRAM_URL} target="_blank" rel="noreferrer" className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100">Telegram</a>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100"
+            >
+              WhatsApp
+            </a>
+            <a
+              href={"https://t.me/frame_surge"}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100"
+            >
+              Telegram
+            </a>
             <button
               onClick={() => setLang(lang === "ar" ? "en" : "ar")}
               className={`relative inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r ${gradient} text-black font-semibold shadow-[0_0_30px_rgba(255,0,128,.25)]`}
@@ -116,7 +137,7 @@ export default function FuturisticPortfolio() {
               <span className="absolute -inset-px rounded-2xl blur-md bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-70 group-hover:opacity-90 transition" />
             </a>
             <a
-              href={TELEGRAM_URL}
+              href={"https://t.me/frame_surge"}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-white/20 hover:border-white/40 transition"
@@ -176,11 +197,18 @@ export default function FuturisticPortfolio() {
 
       {/* Floating Socials */}
       <aside className={`${dir==='rtl' ? 'left-4' : 'right-4'} fixed bottom-4 z-40 flex flex-col gap-2`}>
-        <FloatingIcon href={WHATSAPP_URL} label="WhatsApp"><MessageCircle className="h-5 w-5"/></FloatingIcon>
-        <FloatingIcon href="https://facebook.com/" label="Facebook"><Facebook className="h-5 w-5"/></FloatingIcon>
-        <FloatingIcon href="https://instagram.com/" label="Instagram"><Instagram className="h-5 w-5"/></FloatingIcon>
-        <FloatingIcon href={TELEGRAM_URL} label="Telegram"><Send className="h-5 w-5"/></FloatingIcon>
-        <FloatingIcon href="https://tiktok.com/" label="TikTok"><Music4 className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href={"https://www.facebook.com/profile.php?id=61574806036843"} label="Facebook">
+          <Facebook className="h-5 w-5" />
+        </FloatingIcon>
+        <FloatingIcon href={"https://www.instagram.com/frame_surge/"} label="Instagram">
+          <Instagram className="h-5 w-5" />
+        </FloatingIcon>
+        <FloatingIcon href={"https://t.me/frame_surge"} label="Telegram">
+          <Send className="h-5 w-5" />
+        </FloatingIcon>
+        <FloatingIcon href={"https://www.tiktok.com/@frame_surge"} label="TikTok">
+          <img src={tiktokLogo} alt="TikTok" className="h-5 w-5 object-contain" />
+        </FloatingIcon>
       </aside>
 
       {/* Footer */}
