@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2 } from "lucide-react";
+import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2, ChevronLeft, ChevronRight } from "lucide-react";
 
 // --- Contact links ---
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=963986008935&text&context=Afc0KBO4bwwHvFi_D8ZupdB4AENHBwa8Mq73NKuK4sISOvgMaVCaz3PfLBrfifcXJVHlOrAlda216iEaOnHa_7gObtH88Yk0y5OPyN4ddEzctm6qxhSIS5wdWAx2VqeyrVl_ovApL6abvPPjio-LxzRhRA&source&app=facebook";
@@ -44,7 +44,7 @@ const strings = {
     whatWeDo1: "إنتاج إعلانات مدعومة بالذكاء الاصطناعي",
     whatWeDo2: "هويات بصرية وصور مبتكرة",
     whatWeDo3: "سرد قصصي إبداعي للأعمال",
-    portfolioTitle: "أعمالنا (فيديو)",
+    portfolioTitle: "أعمالنا (ريلز)",
     language: "English",
   },
   en: {
@@ -55,7 +55,7 @@ const strings = {
     whatWeDo1: "AI-generated Ad Production",
     whatWeDo2: "Visual Branding & Imagery",
     whatWeDo3: "Creative Storytelling for Business",
-    portfolioTitle: "Portfolio (Video)",
+    portfolioTitle: "Portfolio (Reels)",
     language: "العربية",
   },
 };
@@ -64,9 +64,84 @@ export default function FuturisticPortfolio() {
   const [lang, setLang] = useState("ar"); // default Arabic
   const t = strings[lang];
   const [videos] = useState(initialVideos);
+  const [index, setIndex] = useState(0);
 
   const dir = lang === "ar" ? "rtl" : "ltr";
   const gradient = "from-fuchsia-500 via-pink-500 to-amber-400";
+
+  // --- Carousel swipe/drag ---
+  const trackRef = useRef(null);
+  const containerRef = useRef(null);
+  const pos = useRef({ startX: 0, deltaX: 0, dragging: false });
+
+  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+  function handlePointerDown(e) {
+    const x = "touches" in e ? e.touches[0].clientX : e.clientX;
+    pos.current = { startX: x, deltaX: 0, dragging: true };
+  }
+  function handlePointerMove(e) {
+    if (!pos.current.dragging) return;
+    const x = "touches" in e ? e.touches[0].clientX : e.clientX;
+    pos.current.deltaX = x - pos.current.startX;
+    const width = containerRef.current?.clientWidth || 320;
+    const base = -index * width;
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(${base + pos.current.deltaX}px)`;
+    }
+  }
+  function handlePointerUp() {
+    if (!pos.current.dragging) return;
+    const width = containerRef.current?.clientWidth || 320;
+    const threshold = width * 0.2;
+    let next = index;
+    if (pos.current.deltaX < -threshold) next = clamp(index + 1, 0, videos.length - 1);
+    else if (pos.current.deltaX > threshold) next = clamp(index - 1, 0, videos.length - 1);
+    setIndex(next);
+    // snap
+    if (trackRef.current) {
+      trackRef.current.style.transition = "transform 280ms ease";
+      trackRef.current.style.transform = `translateX(${-next * width}px)`;
+      setTimeout(() => {
+        if (trackRef.current) trackRef.current.style.transition = "";
+      }, 300);
+    }
+    pos.current.dragging = false;
+    pos.current.deltaX = 0;
+  }
+
+  useEffect(() => {
+    // Snap to current on index change (e.g., via arrows)
+    const width = containerRef.current?.clientWidth || 320;
+    if (trackRef.current) {
+      trackRef.current.style.transition = "transform 280ms ease";
+      trackRef.current.style.transform = `translateX(${-index * width}px)`;
+      setTimeout(() => {
+        if (trackRef.current) trackRef.current.style.transition = "";
+      }, 300);
+    }
+  }, [index]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "ArrowLeft") setIndex((i) => clamp(i - 1, 0, videos.length - 1));
+      if (e.key === "ArrowRight") setIndex((i) => clamp(i + 1, 0, videos.length - 1));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [videos.length]);
+
+  // ensure snap on resize
+  useEffect(() => {
+    const ro = new ResizeObserver(() => {
+      const width = containerRef.current?.clientWidth || 320;
+      if (trackRef.current) {
+        trackRef.current.style.transform = `translateX(${-index * width}px)`;
+      }
+    });
+    if (containerRef.current) ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, [index]);
 
   return (
     <div className="min-h-screen bg-[#0b0b12] text-white" dir={dir}>
@@ -151,29 +226,73 @@ export default function FuturisticPortfolio() {
         </div>
       </section>
 
-      {/* Portfolio / Video Cards */}
+      {/* Reels Carousel */}
       <section className="mx-auto max-w-7xl px-4 py-14">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl md:text-3xl font-bold">{t.portfolioTitle}</h2>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {videos.slice(0, 10).map((v, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.35, delay: i * 0.03 }} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10">
-              <div className="aspect-video">
-                <iframe
-                  className="h-full w-full"
-                  src={driveToEmbed(v)}
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                  title={`video-${i}`}
-                />
+
+        <div
+          ref={containerRef}
+          className="relative mx-auto w-full max-w-md md:max-w-lg lg:max-w-xl select-none touch-pan-y"
+          onMouseLeave={handlePointerUp}
+          onMouseUp={handlePointerUp}
+          onMouseMove={handlePointerMove}
+          onMouseDown={handlePointerDown}
+          onTouchStart={handlePointerDown}
+          onTouchMove={handlePointerMove}
+          onTouchEnd={handlePointerUp}
+        >
+          {/* Track */}
+          <div ref={trackRef} className="flex items-center">
+            {videos.map((v, i) => (
+              <div key={i} className="shrink-0 w-full px-2">
+                <div className="relative w-full bg-black rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_30px_rgba(255,0,128,.25)]">
+                  <div style={{ aspectRatio: '9 / 16' }} className="w-full">
+                    <iframe
+                      className="h-full w-full"
+                      src={driveToEmbed(v)}
+                      allow="autoplay; encrypted-media"
+                      allowFullScreen
+                      title={`reel-${i}`}
+                    />
+                  </div>
+                </div>
               </div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
+
+          {/* Arrows */}
+          <button
+            aria-label="Prev"
+            className="absolute left-[-14px] top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur"
+            onClick={() => setIndex((i) => clamp(i - 1, 0, videos.length - 1))}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            aria-label="Next"
+            className="absolute right-[-14px] top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur"
+            onClick={() => setIndex((i) => clamp(i + 1, 0, videos.length - 1))}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+
+          {/* Dots */}
+          <div className="mt-3 flex justify-center gap-2">
+            {videos.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-pink-500" : "w-2 bg-white/30"}`}
+                onClick={() => setIndex(i)}
+                role="button"
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Floating Socials */}
+      {/* Socials */}
       <aside className={`${dir==='rtl' ? 'left-4' : 'right-4'} fixed bottom-4 z-40 flex flex-col gap-2`}>
         <FloatingIcon href={WHATSAPP_URL} label="WhatsApp"><MessageCircle className="h-5 w-5"/></FloatingIcon>
         <FloatingIcon href="https://facebook.com/" label="Facebook"><Facebook className="h-5 w-5"/></FloatingIcon>
