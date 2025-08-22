@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2 } from "lucide-react";
@@ -6,18 +7,18 @@ import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2 } from "lucide
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=963986008935&text&context=Afc0KBO4bwwHvFi_D8ZupdB4AENHBwa8Mq73NKuK4sISOvgMaVCaz3PfLBrfifcXJVHlOrAlda216iEaOnHa_7gObtH88Yk0y5OPyN4ddEzctm6qxhSIS5wdWAx2VqeyrVl_ovApL6abvPPjio-LxzRhRA&source&app=facebook";
 const TELEGRAM_URL = "https://t.me/frame_surge";
 
-// === Your 10 Google Drive links (edit as needed) ===
+// === Your 10 Google Drive links (updated) ===
 const initialVideos = [
-  "https://drive.google.com/file/d/1A2B3C4D5E6F7G8H9/view?usp=sharing",
-  "https://drive.google.com/file/d/1bEXAMPLEid/view?usp=sharing",
-  "https://drive.google.com/file/d/1cEXAMPLEid/view?usp=sharing",
-  "https://drive.google.com/file/d/1dEXAMPLEid/view?usp=sharing",
-  "https://drive.google.com/file/d/1eEXAMPLEid/view?usp=sharing",
-  "https://drive.google.com/file/d/1fEXAMPLEid/view?usp=sharing",
-  "https://drive.google.com/file/d/1gEXAMPLEid/view?usp=sharing",
-  "https://drive.google.com/file/d/1hEXAMPLEid/view?usp=sharing",
-  "https://drive.google.com/file/d/1iEXAMPLEid/view?usp=sharing",
-  "https://drive.google.com/file/d/1jEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1Zl4bApnNsC3XqRD4fX3eiaUfxLuEX1Jx/view?usp=sharing",
+  "https://drive.google.com/file/d/1dsZpOH1XvV1nX4qmimHZXIHR7a3nBk_E/view?usp=sharing",
+  "https://drive.google.com/file/d/1JvukkuRWU1AQxA99dPSc-PDq7peBTNmN/view?usp=sharing",
+  "https://drive.google.com/file/d/1prGDAL08mq8t6iS69IExnmCftXhZ0Xab/view?usp=sharing",
+  "https://drive.google.com/file/d/1oLYUGEtc6OlwDOA0F9ZxQBgVXsgHQB2Z/view?usp=sharing",
+  "https://drive.google.com/file/d/1Zl4bApnNsC3XqRD4fX3eiaUfxLuEX1Jx/view?usp=sharing",
+  "https://drive.google.com/file/d/1dsZpOH1XvV1nX4qmimHZXIHR7a3nBk_E/view?usp=sharing",
+  "https://drive.google.com/file/d/1JvukkuRWU1AQxA99dPSc-PDq7peBTNmN/view?usp=sharing",
+  "https://drive.google.com/file/d/1prGDAL08mq8t6iS69IExnmCftXhZ0Xab/view?usp=sharing",
+  "https://drive.google.com/file/d/1oLYUGEtc6OlwDOA0F9ZxQBgVXsgHQB2Z/view?usp=sharing",
 ];
 
 function driveToEmbed(url) {
@@ -38,8 +39,8 @@ function driveToEmbed(url) {
 const strings = {
   ar: {
     tagline: "إعلانات بالذكاء الاصطناعي خلال 72 ساعة",
-    sub: "نحوّل علامتك التجارية إلى قصة مستقبلية مؤثرة.",
-    cta_brief: "احجز جلسة تعريف 15 دقيقة",
+    sub: "نحوّل علامتك التجارية إلى قصة مؤثرة.",
+    cta_brief: "احجز استشارة مجانية 15 دقيقة",
     whatWeDoTitle: "ماذا نفعل",
     whatWeDo1: "إنتاج إعلانات مدعومة بالذكاء الاصطناعي",
     whatWeDo2: "هويات بصرية وصور مبتكرة",
@@ -142,9 +143,9 @@ export default function FuturisticPortfolio() {
           {[t.whatWeDo1, t.whatWeDo2, t.whatWeDo3].map((txt, i) => (
             <motion.div key={i} whileHover={{ y: -4 }} className="relative p-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
               <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${gradient} opacity-30 blur-2xl`} />
-              <div className="flex items-center gap-3">
+              <div className={`flex items-center gap-3 ${dir==='rtl' ? 'flex-row-reverse text-right' : ''}`}>
                 <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${gradient} shadow-[0_0_30px_rgba(255,0,128,.35)]`} />
-                <p className="font-semibold leading-relaxed">{txt}</p>
+                <p className="font-semibold leading-relaxed flex-1">{txt}</p>
               </div>
             </motion.div>
           ))}
