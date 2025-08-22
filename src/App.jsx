@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2, Plus, X, ShieldCheck, LogOut } from "lucide-react";
 
@@ -76,15 +76,9 @@ export default function FuturisticPortfolio() {
   const [newLink, setNewLink] = useState("");
 
   // ---- Admin gate ----
-  // Set a secret key in Netlify (or Vite): VITE_ADMIN_KEY=yourSecret
-  // Enable admin mode by visiting: https://yoursite/#admin=yourSecret
   const [admin, setAdmin] = useState(false);
   useEffect(() => {
-    // Persisted session
-    if (localStorage.getItem("fs_admin") === "1") {
-      setAdmin(true);
-    }
-    // One-time activation via URL hash
+    if (localStorage.getItem("fs_admin") === "1") setAdmin(true);
     const hash = window.location.hash || "";
     const m = hash.match(/admin=([^&]+)/);
     if (m) {
@@ -93,16 +87,11 @@ export default function FuturisticPortfolio() {
       if (expected && supplied === expected) {
         localStorage.setItem("fs_admin", "1");
         setAdmin(true);
-        // Clean the hash to avoid leaking the key
         history.replaceState(null, "", window.location.pathname + window.location.search);
       }
     }
   }, []);
-
-  const logoutAdmin = () => {
-    localStorage.removeItem("fs_admin");
-    setAdmin(false);
-  };
+  const logoutAdmin = () => { localStorage.removeItem("fs_admin"); setAdmin(false); };
   // --------------------
 
   const dir = lang === "ar" ? "rtl" : "ltr";
@@ -117,6 +106,7 @@ export default function FuturisticPortfolio() {
 
   return (
     <div className="min-h-screen bg-[#0b0b12] text-white" dir={dir}>
+      {/* Top nav */}
       <header className="sticky top-0 z-40 backdrop-blur bg-black/30 border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -143,7 +133,67 @@ export default function FuturisticPortfolio() {
         </div>
       </header>
 
-      {/* Hero + copy elided for brevity */}
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20`} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mx-auto max-w-7xl px-4 py-20 md:py-28 relative"
+        >
+          <h1 className="text-3xl md:text-6xl font-extrabold leading-tight drop-shadow [text-shadow:0_4px_40px_rgba(255,0,128,.35)]">
+            {t.tagline}
+          </h1>
+          <p className="mt-4 max-w-2xl text-white/80 text-lg md:text-xl">{t.sub}</p>
+          <div className={`mt-8 flex ${dir==='rtl' ? 'flex-row-reverse' : ''} flex-wrap gap-3`}>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className={`group relative inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r ${gradient} text-black font-bold`}
+            >
+              <MessageCircle className="h-5 w-5" /> {t.cta_brief}
+              <span className="absolute -inset-px rounded-2xl blur-md bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-70 group-hover:opacity-90 transition" />
+            </a>
+            <a
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-white/20 hover:border-white/40 transition"
+            >
+              <Send className="h-5 w-5" /> Telegram
+            </a>
+          </div>
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 opacity-70">
+            {["AI Ads","Brand Visuals","Storytelling","Fast Delivery"].map((k, i)=> (
+              <motion.div key={i} whileHover={{ scale: 1.03 }} className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${gradient} mb-3`} />
+                <p className="text-sm">{k}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-72 rounded-full bg-fuchsia-500/30 blur-3xl" />
+      </section>
+
+      {/* What we do */}
+      <section className="mx-auto max-w-7xl px-4 py-14">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6">{t.whatWeDoTitle}</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[t.whatWeDo1, t.whatWeDo2, t.whatWeDo3].map((txt, i) => (
+            <motion.div key={i} whileHover={{ y: -4 }} className="relative p-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+              <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${gradient} opacity-30 blur-2xl`} />
+              <div className="flex items-center gap-3">
+                <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${gradient} shadow-[0_0_30px_rgba(255,0,128,.35)]`} />
+                <p className="font-semibold leading-relaxed">{txt}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Portfolio / Video Cart */}
       <section className="mx-auto max-w-7xl px-4 py-14">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl md:text-3xl font-bold">{t.portfolioTitle}</h2>
@@ -174,6 +224,24 @@ export default function FuturisticPortfolio() {
         </div>
       </section>
 
+      {/* Floating Socials */}
+      <aside className={`${dir==='rtl' ? 'left-4' : 'right-4'} fixed bottom-4 z-40 flex flex-col gap-2`}>
+        <FloatingIcon href={WHATSAPP_URL} label="WhatsApp"><MessageCircle className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://facebook.com/" label="Facebook"><Facebook className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://instagram.com/" label="Instagram"><Instagram className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href={TELEGRAM_URL} label="Telegram"><Send className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://tiktok.com/" label="TikTok"><Music4 className="h-5 w-5"/></FloatingIcon>
+      </aside>
+
+      {/* Footer */}
+      <footer className="mt-10 border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-4 py-8 flex items-center justify-between">
+          <p className="text-white/60 text-sm">© {new Date().getFullYear()} Frame Surge. All rights reserved.</p>
+          <button onClick={() => setLang(lang === "ar" ? "en" : "ar")} className="text-white/70 hover:text-white text-sm">{t.language}</button>
+        </div>
+      </footer>
+
+      {/* Add Video Modal (admin only) */}
       <AnimatePresence>
         {admin && showAdd && (
           <motion.div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -189,18 +257,33 @@ export default function FuturisticPortfolio() {
                 value={newLink}
                 onChange={(e) => setNewLink(e.target.value)}
               />
-              <div className="mt-4 flex gap-2">
+              <div className={`mt-4 flex ${dir==='rtl' ? 'flex-row-reverse' : ''} gap-2`}>
                 <button onClick={addVideo} className={`relative inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 text-black font-semibold`}>
                   <Plus className="h-4 w-4"/> {t.add}
                   <span className="absolute -inset-px rounded-xl blur-[6px] bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-60" />
                 </button>
                 <button onClick={() => setShowAdd(false)} className="px-4 py-2 rounded-xl border border-white/15 hover:border-white/30">{t.cancel}</button>
               </div>
-              <p className="mt-3 text-xs text-white/50">Admin-only. Activation: add #admin=YOUR_KEY to the URL once.</p>
+              <p className="mt-3 text-xs text-white/50">Admin-only. Enable by visiting once with #admin=YOUR_KEY.</p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+function FloatingIcon({ href, label, children }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={label}
+      className="group relative grid place-items-center h-11 w-11 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 transition shadow-[0_0_24px_rgba(255,0,128,.25)]"
+    >
+      {children}
+      <span className="pointer-events-none absolute -inset-px rounded-2xl blur-md bg-gradient-to-br from-fuchsia-500 via-pink-500 to-amber-400 opacity-0 group-hover:opacity-60 transition" />
+    </a>
   );
 }
