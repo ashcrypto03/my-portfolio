@@ -1,183 +1,209 @@
-import React, { useMemo, useState } from "react";
-import { MessageCircle, Send, Globe2, X } from "lucide-react";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2 } from "lucide-react";
 
-// ---------------- Helpers ----------------
+// --- Contact links ---
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=963986008935&text&context=Afc0KBO4bwwHvFi_D8ZupdB4AENHBwa8Mq73NKuK4sISOvgMaVCaz3PfLBrfifcXJVHlOrAlda216iEaOnHa_7gObtH88Yk0y5OPyN4ddEzctm6qxhSIS5wdWAx2VqeyrVl_ovApL6abvPPjio-LxzRhRA&source&app=facebook";
 const TELEGRAM_URL = "https://t.me/frame_surge";
+
+// === Your 10 Google Drive links (edit as needed) ===
+const initialVideos = [
+  "https://drive.google.com/file/d/1A2B3C4D5E6F7G8H9/view?usp=sharing",
+  "https://drive.google.com/file/d/1bEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1cEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1dEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1eEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1fEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1gEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1hEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1iEXAMPLEid/view?usp=sharing",
+  "https://drive.google.com/file/d/1jEXAMPLEid/view?usp=sharing",
+];
 
 function driveToEmbed(url) {
   if (!url) return "";
   try {
-    const m1 = url.match(/\/file\/d\/([^/]+)/);
-    if (m1) return `https://drive.google.com/file/d/${m1[1]}/preview`;
-    const m2 = url.match(/[?&]id=([^&]+)/);
-    if (m2) return `https://drive.google.com/file/d/${m2[1]}/preview`;
-    const m3 = url.match(/uc\?id=([^&]+)/);
-    if (m3) return `https://drive.google.com/file/d/${m3[1]}/preview`;
+    const fileIdMatch = url.match(/\/file\/d\/([^/]+)/);
+    if (fileIdMatch) return `https://drive.google.com/file/d/${fileIdMatch[1]}/preview`;
+    const idParamMatch = url.match(/[?&]id=([^&]+)/);
+    if (idParamMatch) return `https://drive.google.com/file/d/${idParamMatch[1]}/preview`;
+    const ucMatch = url.match(/uc\?id=([^&]+)/);
+    if (ucMatch) return `https://drive.google.com/file/d/${ucMatch[1]}/preview`;
     return url;
-  } catch { return url; }
+  } catch (e) {
+    return url;
+  }
 }
 
-// ---------------- Text strings ----------------
-const STRINGS = {
+const strings = {
   ar: {
-    hero: "إعلانات بالذكاء الاصطناعي خلال 72 ساعة",
+    tagline: "إعلانات بالذكاء الاصطناعي خلال 72 ساعة",
     sub: "نحوّل علامتك التجارية إلى قصة مستقبلية مؤثرة.",
-    whatWeDo: "ماذا نفعل",
-    do1: "إنتاج إعلانات مدعومة بالذكاء الاصطناعي",
-    do2: "هويات بصرية وصور مبتكرة",
-    do3: "سرد قصصي إبداعي للأعمال",
-    portfolio: "أعمالنا (فيديو)",
-    toggle: "English",
-    watch: "مشاهدة",
+    cta_brief: "احجز جلسة تعريف 15 دقيقة",
+    whatWeDoTitle: "ماذا نفعل",
+    whatWeDo1: "إنتاج إعلانات مدعومة بالذكاء الاصطناعي",
+    whatWeDo2: "هويات بصرية وصور مبتكرة",
+    whatWeDo3: "سرد قصصي إبداعي للأعمال",
+    portfolioTitle: "أعمالنا (فيديو)",
+    language: "English",
   },
   en: {
-    hero: "AI-powered ads that ship in 72h",
+    tagline: "AI-powered ads that ship in 72h",
     sub: "We turn your brand into a futuristic story.",
-    whatWeDo: "What We Do",
-    do1: "AI-generated Ad Production",
-    do2: "Visual Branding & Imagery",
-    do3: "Creative Storytelling for Business",
-    portfolio: "Our Work (Video)",
-    toggle: "العربية",
-    watch: "Watch",
+    cta_brief: "Book a 15-min Brief",
+    whatWeDoTitle: "What We Do",
+    whatWeDo1: "AI-generated Ad Production",
+    whatWeDo2: "Visual Branding & Imagery",
+    whatWeDo3: "Creative Storytelling for Business",
+    portfolioTitle: "Portfolio (Video)",
+    language: "العربية",
   },
 };
 
-// ---------------- 5 video cards data ----------------
-const CARDS = [
-  {
-    title_ar: "فيديو سرد قصة العلامة التجارية",
-    desc_ar: "سرد عاطفي للعلامة التجارية مدعوم بإبداع الذكاء الاصطناعي.",
-    url: "https://drive.google.com/file/d/1A2B3C4D5E6F7G8H9/view?usp=sharing",
-  },
-  {
-    title_ar: "حملة إطلاق منتج بالذكاء الاصطناعي",
-    desc_ar: "إطلاق منتج يثري مبرّرات موثوقة بالذكاء الاصطناعي.",
-    url: "https://drive.google.com/file/d/1bEXAMPLEid/view?usp=sharing",
-  },
-  {
-    title_ar: "فيديو إعلان قصير (ريلز)",
-    desc_ar: "تحويل الفكرة إلى ريلز ذكي يلفت الانتباه.",
-    url: "https://drive.google.com/file/d/1cEXAMPLEid/view?usp=sharing",
-  },
-  {
-    title_ar: "تعريف بالخدمة بأسلوب بصري",
-    desc_ar: "شرح خدمة بأسلوب بصري متحرك وجاذب.",
-    url: "https://drive.google.com/file/d/1dEXAMPLEid/view?usp=sharing",
-  },
-  {
-    title_ar: "إعلان عروض موسمية",
-    desc_ar: "عرض موسمي سريع الإقناع مُحسّن للتحويل.",
-    url: "https://drive.google.com/file/d/1eEXAMPLEid/view?usp=sharing",
-  },
-];
+export default function FuturisticPortfolio() {
+  const [lang, setLang] = useState("ar"); // default Arabic
+  const t = strings[lang];
+  const [videos] = useState(initialVideos);
 
-// ---------------- Card component ----------------
-function VideoCard({ title, desc, onOpen }) {
-  return (
-    <div className="card">
-      <div className="thumb" onClick={onOpen}>
-        <div className="play">&#9658;</div>
-      </div>
-      <div className="meta">
-        <div className="title" title={title}>{title}</div>
-        <div className="desc" title={desc}>{desc}</div>
-      </div>
-    </div>
-  );
-}
-
-// ---------------- Modal ----------------
-function Modal({ open, onClose, src }) {
-  if (!open) return null;
-  return (
-    <div className="modal" onClick={onClose}>
-      <div className="modal-dialog" onClick={(e)=>e.stopPropagation()}>
-        <button className="close" onClick={onClose}><X size={18}/></button>
-        <div className="ratio-9-16">
-          <iframe src={driveToEmbed(src)} title="video" allow="autoplay; encrypted-media" allowFullScreen />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ---------------- Full UI ----------------
-export default function App() {
-  const [lang, setLang] = useState("ar");
-  const t = STRINGS[lang];
   const dir = lang === "ar" ? "rtl" : "ltr";
-  const [open, setOpen] = useState(false);
-  const [current, setCurrent] = useState(null);
+  const gradient = "from-fuchsia-500 via-pink-500 to-amber-400";
 
   return (
-    <div dir={dir} className="page">
-      <style>{`
-        :root { --bg:#0b0b12; --panel:rgba(255,255,255,.06); --border:rgba(255,255,255,.12); --muted:rgba(255,255,255,.65); --grad: linear-gradient(90deg,#ff00aa,#ff7a59,#ffc857); }
-        *{box-sizing:border-box} body{margin:0}
-        .page{min-height:100vh;background:var(--bg);color:#fff;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-        header{position:sticky;top:0;background:rgba(0,0,0,.3);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);z-index:50}
-        .container{max-width:1200px;margin:0 auto;padding:12px 16px}
-        .row{display:flex;justify-content:space-between;align-items:center}
-        .switch{padding:8px 12px;border-radius:12px;background:var(--grad);color:#000;font-weight:800;border:none;cursor:pointer}
-        h1{font-size:40px;margin:0;text-shadow:0 4px 40px rgba(255,0,128,.35)}
-        p.lead{opacity:.85;font-size:18px;max-width:720px;margin:12px 0 0}
-        section{padding:28px 16px}
-        .grid{display:grid;grid-template-columns:1fr;gap:18px}
-        @media(min-width:768px){.grid{grid-template-columns:1fr 1fr}}
-        @media(min-width:1200px){.grid{grid-template-columns:1fr 1fr}}
-        .card{background:var(--panel);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
-        .thumb{position:relative;background:radial-gradient(120% 120% at 30% 20%, #0c2b3a 0%, #2a1f33 60%, #1a1622 100%);height:0;padding-top:56.25%;cursor:pointer}
-        .thumb .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:64px;width:64px;border-radius:999px;display:grid;place-items:center;color:#15a6ff;background:rgba(255,255,255,.08);border:1px solid var(--border);font-size:28px}
-        .meta{padding:14px 16px}
-        .title{font-weight:800;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .desc{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        /* Modal */
-        .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
-        .modal-dialog{position:relative;background:#0d0f14;border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.4);max-width:480px;width:100%}
-        .close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:#fff;padding:6px;cursor:pointer}
-        .ratio-9-16{width:100%;aspect-ratio:9/16}
-        .ratio-9-16 iframe{width:100%;height:100%;border:0}
-      `}</style>
-
-      <header>
-        <div className="container row">
-          <strong>Frame Surge</strong>
-          <button className="switch" onClick={()=>setLang(lang==='ar'?'en':'ar')}>🌐 {t.toggle}</button>
+    <div className="min-h-screen bg-[#0b0b12] text-white" dir={dir}>
+      {/* Top nav */}
+      <header className="sticky top-0 z-40 backdrop-blur bg-black/30 border-b border-white/10">
+        <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="logo" className="h-9 w-9 rounded-full ring-2 ring-white/20" onError={(e)=>{e.currentTarget.style.display='none'}}/>
+            <span className="text-lg font-semibold tracking-wide">Frame Surge</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100">WhatsApp</a>
+            <a href={TELEGRAM_URL} target="_blank" rel="noreferrer" className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100">Telegram</a>
+            <button
+              onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+              className={`relative inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r ${gradient} text-black font-semibold shadow-[0_0_30px_rgba(255,0,128,.25)]`}
+            >
+              <Globe2 className="h-4 w-4" /> {t.language}
+              <span className="absolute -inset-px rounded-xl blur-[6px] bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-60" />
+            </button>
+          </div>
         </div>
       </header>
 
-      <main>
-        <section className="container">
-          <h1>{t.hero}</h1>
-          <p className="lead">{t.sub}</p>
-        </section>
-
-        {/* Cards Grid (5 cards) */}
-        <section className="container">
-          <h2 style={{fontSize:24,fontWeight:900,marginBottom:12}}>{t.portfolio}</h2>
-          <div className="grid">
-            {CARDS.map((c, i) => (
-              <VideoCard
-                key={i}
-                title={c.title_ar}
-                desc={c.desc_ar}
-                onOpen={() => { setCurrent(c.url); setOpen(true); }}
-              />
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20`} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mx-auto max-w-7xl px-4 py-20 md:py-28 relative"
+        >
+          <h1 className="text-3xl md:text-6xl font-extrabold leading-tight drop-shadow [text-shadow:0_4px_40px_rgba(255,0,128,.35)]">
+            {t.tagline}
+          </h1>
+          <p className="mt-4 max-w-2xl text-white/80 text-lg md:text-xl">{t.sub}</p>
+          <div className={`mt-8 flex ${dir==='rtl' ? 'flex-row-reverse' : ''} flex-wrap gap-3`}>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className={`group relative inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r ${gradient} text-black font-bold`}
+            >
+              <MessageCircle className="h-5 w-5" /> {t.cta_brief}
+              <span className="absolute -inset-px rounded-2xl blur-md bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-70 group-hover:opacity-90 transition" />
+            </a>
+            <a
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-white/20 hover:border-white/40 transition"
+            >
+              <Send className="h-5 w-5" /> Telegram
+            </a>
+          </div>
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 opacity-70">
+            {["AI Ads","Brand Visuals","Storytelling","Fast Delivery"].map((k, i)=> (
+              <motion.div key={i} whileHover={{ scale: 1.03 }} className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${gradient} mb-3`} />
+                <p className="text-sm">{k}</p>
+              </motion.div>
             ))}
           </div>
-        </section>
-      </main>
+        </motion.div>
+        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-72 rounded-full bg-fuchsia-500/30 blur-3xl" />
+      </section>
 
-      <Modal open={open} src={current} onClose={()=>setOpen(false)} />
+      {/* What we do */}
+      <section className="mx-auto max-w-7xl px-4 py-14">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6">{t.whatWeDoTitle}</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[t.whatWeDo1, t.whatWeDo2, t.whatWeDo3].map((txt, i) => (
+            <motion.div key={i} whileHover={{ y: -4 }} className="relative p-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+              <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${gradient} opacity-30 blur-2xl`} />
+              <div className="flex items-center gap-3">
+                <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${gradient} shadow-[0_0_30px_rgba(255,0,128,.35)]`} />
+                <p className="font-semibold leading-relaxed">{txt}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-      <footer style={{borderTop:'1px solid var(--border)',marginTop:24}}>
-        <div className="container" style={{display:'flex',justifyContent:'space-between',opacity:.75,fontSize:14}}>
-          <span>© {new Date().getFullYear()} Frame Surge. All rights reserved.</span>
-          <span>Built with AI ✨</span>
+      {/* Portfolio / Video Cards */}
+      <section className="mx-auto max-w-7xl px-4 py-14">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold">{t.portfolioTitle}</h2>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {videos.slice(0, 10).map((v, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.35, delay: i * 0.03 }} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+              <div className="aspect-video">
+                <iframe
+                  className="h-full w-full"
+                  src={driveToEmbed(v)}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  title={`video-${i}`}
+                />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Floating Socials */}
+      <aside className={`${dir==='rtl' ? 'left-4' : 'right-4'} fixed bottom-4 z-40 flex flex-col gap-2`}>
+        <FloatingIcon href={WHATSAPP_URL} label="WhatsApp"><MessageCircle className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://facebook.com/" label="Facebook"><Facebook className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://instagram.com/" label="Instagram"><Instagram className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href={TELEGRAM_URL} label="Telegram"><Send className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://tiktok.com/" label="TikTok"><Music4 className="h-5 w-5"/></FloatingIcon>
+      </aside>
+
+      {/* Footer */}
+      <footer className="mt-10 border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-4 py-8 flex items-center justify-between">
+          <p className="text-white/60 text-sm">© {new Date().getFullYear()} Frame Surge. All rights reserved.</p>
+          <button onClick={() => setLang(lang === "ar" ? "en" : "ar")} className="text-white/70 hover:text-white text-sm">{t.language}</button>
         </div>
       </footer>
     </div>
+  );
+}
+
+function FloatingIcon({ href, label, children }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={label}
+      className="group relative grid place-items-center h-11 w-11 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 transition shadow-[0_0_24px_rgba(255,0,128,.25)]"
+    >
+      {children}
+      <span className="pointer-events-none absolute -inset-px rounded-2xl blur-md bg-gradient-to-br from-fuchsia-500 via-pink-500 to-amber-400 opacity-0 group-hover:opacity-60 transition" />
+    </a>
   );
 }
