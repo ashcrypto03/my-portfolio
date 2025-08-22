@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2, Plus, X, ShieldCheck, LogOut } from "lucide-react";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { MessageCircle, Instagram, Facebook, Send, Music4, Globe2 } from "lucide-react";
 
+// --- Contact links ---
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=963986008935&text&context=Afc0KBO4bwwHvFi_D8ZupdB4AENHBwa8Mq73NKuK4sISOvgMaVCaz3PfLBrfifcXJVHlOrAlda216iEaOnHa_7gObtH88Yk0y5OPyN4ddEzctm6qxhSIS5wdWAx2VqeyrVl_ovApL6abvPPjio-LxzRhRA&source&app=facebook";
 const TELEGRAM_URL = "https://t.me/frame_surge";
 
+// === Your 10 Google Drive links (edit as needed) ===
 const initialVideos = [
   "https://drive.google.com/file/d/1A2B3C4D5E6F7G8H9/view?usp=sharing",
   "https://drive.google.com/file/d/1bEXAMPLEid/view?usp=sharing",
@@ -43,12 +45,7 @@ const strings = {
     whatWeDo2: "هويات بصرية وصور مبتكرة",
     whatWeDo3: "سرد قصصي إبداعي للأعمال",
     portfolioTitle: "أعمالنا (فيديو)",
-    addVideo: "إضافة رابط فيديو من Google Drive",
-    add: "إضافة",
-    cancel: "إلغاء",
     language: "English",
-    admin: "مسؤول",
-    logout: "تسجيل الخروج",
   },
   en: {
     tagline: "AI-powered ads that ship in 72h",
@@ -59,60 +56,21 @@ const strings = {
     whatWeDo2: "Visual Branding & Imagery",
     whatWeDo3: "Creative Storytelling for Business",
     portfolioTitle: "Portfolio (Video)",
-    addVideo: "Add a Google Drive video link",
-    add: "Add",
-    cancel: "Cancel",
     language: "العربية",
-    admin: "Admin",
-    logout: "Log out",
   },
 };
 
 export default function FuturisticPortfolio() {
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState("ar"); // default Arabic
   const t = strings[lang];
-  const [videos, setVideos] = useState(initialVideos);
-  const [showAdd, setShowAdd] = useState(false);
-  const [newLink, setNewLink] = useState("");
-
-  // Admin gate (server verified)
-  const [admin, setAdmin] = useState(false);
-  useEffect(() => {
-    if (localStorage.getItem("fs_admin") === "1") setAdmin(true);
-    const hash = window.location.hash || "";
-    const m = hash.match(/admin=([^&]+)/);
-    if (m) {
-      const supplied = decodeURIComponent(m[1]);
-      fetch("/.netlify/functions/admin-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: supplied }),
-      })
-        .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-        .then(() => {
-          localStorage.setItem("fs_admin", "1");
-          setAdmin(true);
-          history.replaceState(null, "", window.location.pathname + window.location.search);
-        })
-        .catch(() => {
-          // optional: show toast
-        });
-    }
-  }, []);
-  const logoutAdmin = () => { localStorage.removeItem("fs_admin"); setAdmin(false); };
+  const [videos] = useState(initialVideos);
 
   const dir = lang === "ar" ? "rtl" : "ltr";
   const gradient = "from-fuchsia-500 via-pink-500 to-amber-400";
 
-  const addVideo = () => {
-    if (!newLink.trim()) return;
-    setVideos((v) => [newLink.trim(), ...v].slice(0, 20));
-    setNewLink("");
-    setShowAdd(false);
-  };
-
   return (
     <div className="min-h-screen bg-[#0b0b12] text-white" dir={dir}>
+      {/* Top nav */}
       <header className="sticky top-0 z-40 backdrop-blur bg-black/30 border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -120,12 +78,6 @@ export default function FuturisticPortfolio() {
             <span className="text-lg font-semibold tracking-wide">Frame Surge</span>
           </div>
           <div className="flex items-center gap-3">
-            {admin && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-emerald-600/20 text-emerald-300 text-xs border border-emerald-400/30">
-                <ShieldCheck className="h-4 w-4"/> {t.admin}
-                <button onClick={logoutAdmin} className="ml-2 opacity-70 hover:opacity-100 underline decoration-dotted text-emerald-200 text-[11px] flex items-center gap-1"><LogOut className="h-3 w-3"/>{t.logout}</button>
-              </span>
-            )}
             <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100">WhatsApp</a>
             <a href={TELEGRAM_URL} target="_blank" rel="noreferrer" className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100">Telegram</a>
             <button
@@ -139,18 +91,70 @@ export default function FuturisticPortfolio() {
         </div>
       </header>
 
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20`} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mx-auto max-w-7xl px-4 py-20 md:py-28 relative"
+        >
+          <h1 className="text-3xl md:text-6xl font-extrabold leading-tight drop-shadow [text-shadow:0_4px_40px_rgba(255,0,128,.35)]">
+            {t.tagline}
+          </h1>
+          <p className="mt-4 max-w-2xl text-white/80 text-lg md:text-xl">{t.sub}</p>
+          <div className={`mt-8 flex ${dir==='rtl' ? 'flex-row-reverse' : ''} flex-wrap gap-3`}>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className={`group relative inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r ${gradient} text-black font-bold`}
+            >
+              <MessageCircle className="h-5 w-5" /> {t.cta_brief}
+              <span className="absolute -inset-px rounded-2xl blur-md bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-70 group-hover:opacity-90 transition" />
+            </a>
+            <a
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-white/20 hover:border-white/40 transition"
+            >
+              <Send className="h-5 w-5" /> Telegram
+            </a>
+          </div>
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 opacity-70">
+            {["AI Ads","Brand Visuals","Storytelling","Fast Delivery"].map((k, i)=> (
+              <motion.div key={i} whileHover={{ scale: 1.03 }} className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${gradient} mb-3`} />
+                <p className="text-sm">{k}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-72 rounded-full bg-fuchsia-500/30 blur-3xl" />
+      </section>
+
+      {/* What we do */}
+      <section className="mx-auto max-w-7xl px-4 py-14">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6">{t.whatWeDoTitle}</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[t.whatWeDo1, t.whatWeDo2, t.whatWeDo3].map((txt, i) => (
+            <motion.div key={i} whileHover={{ y: -4 }} className="relative p-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+              <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${gradient} opacity-30 blur-2xl`} />
+              <div className="flex items-center gap-3">
+                <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${gradient} shadow-[0_0_30px_rgba(255,0,128,.35)]`} />
+                <p className="font-semibold leading-relaxed">{txt}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Portfolio / Video Cards */}
       <section className="mx-auto max-w-7xl px-4 py-14">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl md:text-3xl font-bold">{t.portfolioTitle}</h2>
-          {admin && (
-            <button
-              onClick={() => setShowAdd(true)}
-              className={`relative inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r ${"from-fuchsia-500 via-pink-500 to-amber-400"} text-black font-semibold`}
-            >
-              <Plus className="h-4 w-4" /> {t.addVideo}
-              <span className="absolute -inset-px rounded-xl blur-[6px] bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-60" />
-            </button>
-          )}
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {videos.slice(0, 10).map((v, i) => (
@@ -169,33 +173,37 @@ export default function FuturisticPortfolio() {
         </div>
       </section>
 
-      <AnimatePresence>
-        {admin && showAdd && (
-          <motion.div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }} className="w-full max-w-xl rounded-2xl border border-white/10 bg-[#161626] p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">{t.addVideo}</h3>
-                <button onClick={() => setShowAdd(false)} className="p-2 rounded-full hover:bg-white/10"><X/></button>
-              </div>
-              <input
-                type="url"
-                placeholder="https://drive.google.com/file/d/FILE_ID/view?usp=sharing"
-                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 outline-none focus:border-white/30"
-                value={newLink}
-                onChange={(e) => setNewLink(e.target.value)}
-              />
-              <div className={`mt-4 flex ${dir==='rtl' ? 'flex-row-reverse' : ''} gap-2`}>
-                <button onClick={addVideo} className={`relative inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 text-black font-semibold`}>
-                  <Plus className="h-4 w-4"/> {t.add}
-                  <span className="absolute -inset-px rounded-xl blur-[6px] bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-60" />
-                </button>
-                <button onClick={() => setShowAdd(false)} className="px-4 py-2 rounded-xl border border-white/15 hover:border-white/30">{t.cancel}</button>
-              </div>
-              <p className="mt-3 text-xs text-white/50">Admin verified via Netlify Function. Add #admin=YOUR_KEY once.</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Floating Socials */}
+      <aside className={`${dir==='rtl' ? 'left-4' : 'right-4'} fixed bottom-4 z-40 flex flex-col gap-2`}>
+        <FloatingIcon href={WHATSAPP_URL} label="WhatsApp"><MessageCircle className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://facebook.com/" label="Facebook"><Facebook className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://instagram.com/" label="Instagram"><Instagram className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href={TELEGRAM_URL} label="Telegram"><Send className="h-5 w-5"/></FloatingIcon>
+        <FloatingIcon href="https://tiktok.com/" label="TikTok"><Music4 className="h-5 w-5"/></FloatingIcon>
+      </aside>
+
+      {/* Footer */}
+      <footer className="mt-10 border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-4 py-8 flex items-center justify-between">
+          <p className="text-white/60 text-sm">© {new Date().getFullYear()} Frame Surge. All rights reserved.</p>
+          <button onClick={() => setLang(lang === "ar" ? "en" : "ar")} className="text-white/70 hover:text-white text-sm">{t.language}</button>
+        </div>
+      </footer>
     </div>
+  );
+}
+
+function FloatingIcon({ href, label, children }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={label}
+      className="group relative grid place-items-center h-11 w-11 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 transition shadow-[0_0_24px_rgba(255,0,128,.25)]"
+    >
+      {children}
+      <span className="pointer-events-none absolute -inset-px rounded-2xl blur-md bg-gradient-to-br from-fuchsia-500 via-pink-500 to-amber-400 opacity-0 group-hover:opacity-60 transition" />
+    </a>
   );
 }
