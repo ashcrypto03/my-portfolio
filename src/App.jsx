@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { MessageCircle, Instagram, Facebook, Send, Globe2 } from "lucide-react";
 import brandLogo from "./assets/brand-logo.jpg";
-import tiktokLogo from "./assets/tiktok-logo.webp";
+import whatsappIcon from "./assets/whatsapp.png";
+import tiktokIcon from "./assets/tiktok.png";
 
 // --- Contact links ---
 const WHATSAPP_URL =
@@ -27,11 +28,11 @@ const initialVideos = [
 function driveToEmbed(url) {
   if (!url) return "";
   try {
-    const fileIdMatch = url.match(/\/file\/d\/([^/]+)/);
+    const fileIdMatch = url.match(/\\/file\\/d\\/([^/]+)/);
     if (fileIdMatch) return `https://drive.google.com/file/d/${fileIdMatch[1]}/preview`;
     const idParamMatch = url.match(/[?&]id=([^&]+)/);
     if (idParamMatch) return `https://drive.google.com/file/d/${idParamMatch[1]}/preview`;
-    const ucMatch = url.match(/uc\?id=([^&]+)/);
+    const ucMatch = url.match(/uc\\?id=([^&]+)/);
     if (ucMatch) return `https://drive.google.com/file/d/${ucMatch[1]}/preview`;
     return url;
   } catch (e) {
@@ -197,17 +198,17 @@ export default function FuturisticPortfolio() {
 
       {/* Floating Socials */}
       <aside className={`${dir==='rtl' ? 'left-4' : 'right-4'} fixed bottom-4 z-40 flex flex-col gap-2`}>
+        <FloatingIcon href={WHATSAPP_URL} label="WhatsApp">
+          <img src={whatsappIcon} alt="WhatsApp" className="h-5 w-5 object-contain" />
+        </FloatingIcon>
         <FloatingIcon href={"https://www.facebook.com/profile.php?id=61574806036843"} label="Facebook">
           <Facebook className="h-5 w-5" />
         </FloatingIcon>
         <FloatingIcon href={"https://www.instagram.com/frame_surge/"} label="Instagram">
           <Instagram className="h-5 w-5" />
         </FloatingIcon>
-        <FloatingIcon href={"https://t.me/frame_surge"} label="Telegram">
-          <Send className="h-5 w-5" />
-        </FloatingIcon>
         <FloatingIcon href={"https://www.tiktok.com/@frame_surge"} label="TikTok">
-          <img src={tiktokLogo} alt="TikTok" className="h-5 w-5 object-contain" />
+          <img src={tiktokIcon} alt="TikTok" className="h-5 w-5 object-contain" />
         </FloatingIcon>
       </aside>
 
