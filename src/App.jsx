@@ -213,22 +213,27 @@ export default function FuturisticPortfolio() {
                   title={`video-${i}`}
                 />
               </div>
-              {/* Bottom: content bar (3-line clamp + expand) */}
-              <div className="px-3 py-3 border-t border-white/10 bg-black/30 relative" style={{minHeight: "84px"}}>
+              {/* Bottom: content bar (3-line clamp + inline expand) */}
+              <div className="px-3 py-3 border-t border-white/10 bg-black/30" style={{minHeight: "100px"}}>
                 <p
-                  className="text-xs md:text-sm text-white/85 leading-snug pr-16"
+                  className={`text-xs md:text-sm text-white/85 leading-snug ${dir==='rtl' ? 'text-right' : 'text-left'}`}
                   style={{ display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}
                   title={lang === "ar" ? item.ar : item.en}
                 >
                   {lang === "ar" ? item.ar : item.en}
                 </p>
-                <ExpandControl
-                  text={lang === "ar" ? item.ar : item.en}
-                  labelOpen={t.readMore}
-                  labelTitle={t.fullDesc}
-                  labelClose={t.close}
-                  dir={dir}
-                />
+                {/* Align the button to the logical 'end':
+                    - in LTR: right
+                    - in RTL: left */}
+                <div className="mt-2 flex justify-end">
+                  <ExpandControl
+                    text={lang === "ar" ? item.ar : item.en}
+                    labelOpen={t.readMore}
+                    labelTitle={t.fullDesc}
+                    labelClose={t.close}
+                    dir={dir}
+                  />
+                </div>
               </div>
             </motion.div>
           ))}
@@ -264,13 +269,12 @@ export default function FuturisticPortfolio() {
 
 function ExpandControl({ text, labelOpen, labelTitle, labelClose, dir }) {
   const [open, setOpen] = useState(false);
-  const sideClass = dir === "rtl" ? "left-3" : "right-3";
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`absolute ${sideClass} bottom-2 text-xs md:text-[13px] font-medium text-white/80 hover:text-white underline underline-offset-2`}
+        className="text-xs md:text-[13px] font-medium text-white/80 hover:text-white underline underline-offset-2 decoration-white/50 hover:decoration-white"
       >
         {labelOpen}
       </button>
