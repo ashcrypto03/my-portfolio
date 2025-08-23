@@ -25,17 +25,17 @@ const initialVideos = [
   "https://drive.google.com/file/d/1oLYUGEtc6OlwDOA0F9ZxQBgVXsgHQB2Z/view?usp=sharing",
 ];
 
+// Robustly convert Drive links to embeddable preview URLs without tricky regex escapes
 function driveToEmbed(url) {
   if (!url) return "";
   try {
-    const fileIdMatch = url.match(/\\/file\\/d\\/([^/]+)/);
-    if (fileIdMatch) return `https://drive.google.com/file/d/${fileIdMatch[1]}/preview`;
-    const idParamMatch = url.match(/[?&]id=([^&]+)/);
-    if (idParamMatch) return `https://drive.google.com/file/d/${idParamMatch[1]}/preview`;
-    const ucMatch = url.match(/uc\\?id=([^&]+)/);
-    if (ucMatch) return `https://drive.google.com/file/d/${ucMatch[1]}/preview`;
+    const m = url.match(/\/file\/d\/([^/]+)/);
+    if (m) return `https://drive.google.com/file/d/${m[1]}/preview`;
+    const u = new URL(url);
+    const id = u.searchParams.get("id");
+    if (id) return `https://drive.google.com/file/d/${id}/preview`;
     return url;
-  } catch (e) {
+  } catch {
     return url;
   }
 }
