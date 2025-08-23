@@ -5,7 +5,7 @@ import { Instagram, Facebook, Send, Globe2 } from "lucide-react";
 import brandLogo from "./assets/brand-logo.jpg";
 import whatsappIcon from "./assets/whatsapp.png"; // floating white icon
 import tiktokIcon from "./assets/tiktok.png";
-import whatsappBlackIcon from "./assets/whatsapp-black.png"; // NEW: black icon for CTA button
+import whatsappBlackIcon from "./assets/whatsapp-black.png"; // black icon for CTA button
 
 // --- Contact links ---
 const WHATSAPP_URL =
@@ -52,6 +52,7 @@ const strings = {
     whatWeDo3: "سرد قصصي إبداعي للأعمال",
     portfolioTitle: "أعمالنا (فيديو)",
     language: "English",
+    defaultDesc: "اعلان لمول تجاري يتضمن تعليق صوتي وتأثيرات كاملة بالذكاء الاصطناعي",
   },
   en: {
     tagline: "AI-powered ads that ship in 72h",
@@ -63,14 +64,20 @@ const strings = {
     whatWeDo3: "Creative Storytelling for Business",
     portfolioTitle: "Portfolio (Video)",
     language: "العربية",
+    defaultDesc: "An ad for a shopping mall with voice-over and full AI effects",
   },
 };
+
+// Build items with bilingual descriptions (same line for now)
+const videoItems = initialVideos.map((url) => ({
+  url,
+  ar: strings.ar.defaultDesc,
+  en: strings.en.defaultDesc,
+}));
 
 export default function FuturisticPortfolio() {
   const [lang, setLang] = useState("ar"); // default Arabic
   const t = strings[lang];
-  const [videos] = useState(initialVideos);
-
   const dir = lang === "ar" ? "rtl" : "ltr";
   const gradient = "from-fuchsia-500 via-pink-500 to-amber-400";
 
@@ -140,7 +147,7 @@ export default function FuturisticPortfolio() {
               <span className="absolute -inset-px rounded-2xl blur-md bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-70 group-hover:opacity-90 transition" />
             </a>
             <a
-              href={TELEGRAM_URL}
+              href={"https://t.me/frame_surge"}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-white/20 hover:border-white/40 transition"
@@ -182,16 +189,30 @@ export default function FuturisticPortfolio() {
           <h2 className="text-2xl md:text-3xl font-bold">{t.portfolioTitle}</h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {videos.slice(0, 10).map((v, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.35, delay: i * 0.03 }} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+          {videoItems.slice(0, 10).map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: i * 0.03 }}
+              className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10"
+            >
+              {/* Top: video */}
               <div className="aspect-video">
                 <iframe
                   className="h-full w-full"
-                  src={driveToEmbed(v)}
+                  src={driveToEmbed(item.url)}
                   allow="autoplay; encrypted-media"
                   allowFullScreen
                   title={`video-${i}`}
                 />
+              </div>
+              {/* Bottom: content card */}
+              <div className="px-3 py-2 border-t border-white/10 bg-black/20">
+                <p className="text-xs md:text-sm text-white/85 truncate">
+                  {lang === "ar" ? item.ar : item.en}
+                </p>
               </div>
             </motion.div>
           ))}
