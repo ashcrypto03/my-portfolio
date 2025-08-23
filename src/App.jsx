@@ -208,11 +208,11 @@ export default function FuturisticPortfolio() {
                   title={`video-${i}`}
                 />
               </div>
-              {/* Bottom: content card */}
-              <div className="px-3 py-3 border-t border-white/10 bg-black/30" style={{minHeight: "56px"}}>
+              {/* Bottom: content card - 4 lines clamp */}
+              <div className="px-3 py-3 border-t border-white/10 bg-black/30" style={{minHeight: "112px"}}>
                 <p
                   className="text-xs md:text-sm text-white/85 leading-snug"
-                  style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+                  style={{ display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden" }}
                   title={lang === "ar" ? item.ar : item.en}
                 >
                   {lang === "ar" ? item.ar : item.en}
