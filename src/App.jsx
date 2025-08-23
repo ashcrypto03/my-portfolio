@@ -51,6 +51,7 @@ const strings = {
     whatWeDo3: "سرد قصصي إبداعي للأعمال",
     portfolioTitle: "أعمالنا (فيديو)",
     language: "English",
+    // UPDATED Arabic description (single paragraph)
     defaultDesc: "إعلان مبتكر لمول تجاري يعتمد على تقنيات الذكاء الاصطناعي الحديثة لتقديم تجربة بصرية وسمعية متكاملة. يتضمن الإعلان تعليقًا صوتيًا احترافيًا بتوليد آلي يحاكي الأداء البشري بدقة عالية ويجذب الانتباه. تُضاف إليه مؤثرات صوتية ومرئية مميزة لخلق جو تفاعلي وحيوي يعكس أجواء المول. الهدف هو إبراز تنوع المتاجر والعروض بطريقة جذابة تجعل المشاهد يعيش تجربة التسوق قبل أن يزورها فعليًا. هذا الإعلان يعكس مزيجًا من التقنية والإبداع، ليمنح العلامة التجارية صورة عصرية وملهمة.",
     readMore: "عرض المزيد",
     fullDesc: "النص الكامل",
@@ -66,11 +67,8 @@ const strings = {
     whatWeDo3: "Creative Storytelling for Business",
     portfolioTitle: "Portfolio (Video)",
     language: "العربية",
-    defaultDesc: "An innovative advertisement for a shopping mall that relies on modern artificial intelligence technologies to deliver a complete visual and auditory experience.
-The advertisement features a professional AI-generated voiceover that accurately simulates human performance and captures attention.
-It is enhanced with distinctive audio and visual effects to create an interactive and lively atmosphere that reflects the mall’s ambiance.
-The aim is to highlight the variety of stores and offers in an attractive way that allows the viewer to experience shopping even before visiting.
-This advertisement embodies a fusion of technology and creativity, giving the brand a modern and inspiring image.",
+    // UPDATED English description (escaped newlines)
+    defaultDesc: "An innovative advertisement for a shopping mall that relies on modern artificial intelligence technologies to deliver a complete visual and auditory experience.\nThe advertisement features a professional AI-generated voiceover that accurately simulates human performance and captures attention.\nIt is enhanced with distinctive audio and visual effects to create an interactive and lively atmosphere that reflects the mall’s ambiance.\nThe aim is to highlight the variety of stores and offers in an attractive way that allows the viewer to experience shopping even before visiting.\nThis advertisement embodies a fusion of technology and creativity, giving the brand a modern and inspiring image.",
     readMore: "Read more",
     fullDesc: "Full description",
     close: "Close",
@@ -226,9 +224,6 @@ export default function FuturisticPortfolio() {
                 >
                   {lang === "ar" ? item.ar : item.en}
                 </p>
-                {/* Align the button to the logical 'end':
-                    - in LTR: right
-                    - in RTL: left */}
                 <div className="mt-2 flex justify-end">
                   <ExpandControl
                     text={lang === "ar" ? item.ar : item.en}
