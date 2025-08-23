@@ -68,7 +68,7 @@ const strings = {
   },
 };
 
-// Build items with bilingual descriptions (same line for now)
+// Build items with bilingual descriptions
 const videoItems = initialVideos.map((url) => ({
   url,
   ar: strings.ar.defaultDesc,
@@ -104,7 +104,7 @@ export default function FuturisticPortfolio() {
               WhatsApp
             </a>
             <a
-              href={"https://t.me/frame_surge"}
+              href={TELEGRAM_URL}
               target="_blank"
               rel="noreferrer"
               className="hidden md:inline-flex text-sm opacity-90 hover:opacity-100"
@@ -147,7 +147,7 @@ export default function FuturisticPortfolio() {
               <span className="absolute -inset-px rounded-2xl blur-md bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-70 group-hover:opacity-90 transition" />
             </a>
             <a
-              href={"https://t.me/frame_surge"}
+              href={TELEGRAM_URL}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-white/20 hover:border-white/40 transition"
@@ -209,8 +209,12 @@ export default function FuturisticPortfolio() {
                 />
               </div>
               {/* Bottom: content card */}
-              <div className="px-3 py-2 border-t border-white/10 bg-black/20">
-                <p className="text-xs md:text-sm text-white/85 truncate">
+              <div className="px-3 py-3 border-t border-white/10 bg-black/30" style={{minHeight: "56px"}}>
+                <p
+                  className="text-xs md:text-sm text-white/85 leading-snug"
+                  style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+                  title={lang === "ar" ? item.ar : item.en}
+                >
                   {lang === "ar" ? item.ar : item.en}
                 </p>
               </div>
