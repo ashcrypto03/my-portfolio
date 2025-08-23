@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Instagram, Facebook, Send, Globe2 } from "lucide-react";
+import { Instagram, Facebook, Send, Globe2, X } from "lucide-react";
 import brandLogo from "./assets/brand-logo.jpg";
 import whatsappIcon from "./assets/whatsapp.png"; // floating white icon
 import tiktokIcon from "./assets/tiktok.png";
@@ -53,6 +53,9 @@ const strings = {
     portfolioTitle: "أعمالنا (فيديو)",
     language: "English",
     defaultDesc: "اعلان لمول تجاري يتضمن تعليق صوتي وتأثيرات كاملة بالذكاء الاصطناعي",
+    readMore: "عرض المزيد",
+    fullDesc: "النص الكامل",
+    close: "إغلاق",
   },
   en: {
     tagline: "AI-powered ads that ship in 72h",
@@ -65,6 +68,9 @@ const strings = {
     portfolioTitle: "Portfolio (Video)",
     language: "العربية",
     defaultDesc: "An ad for a shopping mall with voice-over and full AI effects",
+    readMore: "Read more",
+    fullDesc: "Full description",
+    close: "Close",
   },
 };
 
@@ -208,15 +214,22 @@ export default function FuturisticPortfolio() {
                   title={`video-${i}`}
                 />
               </div>
-              {/* Bottom: content card - 4 lines clamp */}
-              <div className="px-3 py-3 border-t border-white/10 bg-black/30" style={{minHeight: "112px"}}>
+              {/* Bottom: content bar (3-line clamp + expand) */}
+              <div className="px-3 py-3 border-t border-white/10 bg-black/30 relative" style={{minHeight: "84px"}}>
                 <p
-                  className="text-xs md:text-sm text-white/85 leading-snug"
-                  style={{ display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+                  className="text-xs md:text-sm text-white/85 leading-snug pr-16"
+                  style={{ display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}
                   title={lang === "ar" ? item.ar : item.en}
                 >
                   {lang === "ar" ? item.ar : item.en}
                 </p>
+                <ExpandControl
+                  text={lang === "ar" ? item.ar : item.en}
+                  labelOpen={t.readMore}
+                  labelTitle={t.fullDesc}
+                  labelClose={t.close}
+                  dir={dir}
+                />
               </div>
             </motion.div>
           ))}
@@ -234,7 +247,7 @@ export default function FuturisticPortfolio() {
         <FloatingIcon href={"https://www.instagram.com/frame_surge/"} label="Instagram">
           <Instagram className="h-5 w-5" />
         </FloatingIcon>
-        <FloatingIcon href={"https://www.tiktok.com/@frame_surge"} label="TikTok">
+        <FloatingIcon href({"https://www.tiktok.com/@frame_surge"}) label="TikTok">
           <img src={tiktokIcon} alt="TikTok" className="h-5 w-5 object-contain" />
         </FloatingIcon>
       </aside>
@@ -247,6 +260,56 @@ export default function FuturisticPortfolio() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function ExpandControl({ text, labelOpen, labelTitle, labelClose, dir }) {
+  const [open, setOpen] = useState(false);
+  const sideClass = dir === "rtl" ? "left-3" : "right-3";
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className={`absolute ${sideClass} bottom-2 text-xs md:text-[13px] font-medium text-white/80 hover:text-white underline underline-offset-2`}
+      >
+        {labelOpen}
+      </button>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-[99] bg-black/60 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            className="absolute inset-0 grid place-items-center p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-full max-w-lg rounded-2xl bg-neutral-900 border border-white/10 shadow-xl p-5" dir={dir}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-base font-semibold">{labelTitle}</h3>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="p-1 rounded-md hover:bg-white/10"
+                  aria-label={labelClose}
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <p className="text-sm leading-relaxed whitespace-pre-wrap text-white/90">{text}</p>
+              <div className="mt-4 flex justify-end">
+                <button
+                  onClick={() => setOpen(false)}
+                  className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 text-sm"
+                >
+                  {labelClose}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
