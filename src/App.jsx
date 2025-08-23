@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Instagram, Facebook, Send, Globe2, X } from "lucide-react";
@@ -247,7 +246,7 @@ export default function FuturisticPortfolio() {
         <FloatingIcon href={"https://www.instagram.com/frame_surge/"} label="Instagram">
           <Instagram className="h-5 w-5" />
         </FloatingIcon>
-        <FloatingIcon href({"https://www.tiktok.com/@frame_surge"}) label="TikTok">
+        <FloatingIcon href={"https://www.tiktok.com/@frame_surge"} label="TikTok">
           <img src={tiktokIcon} alt="TikTok" className="h-5 w-5 object-contain" />
         </FloatingIcon>
       </aside>
