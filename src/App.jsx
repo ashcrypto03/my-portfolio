@@ -1,10 +1,11 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Instagram, Facebook, Send, Globe2 } from "lucide-react";
+import { Instagram, Facebook, Send, Globe2 } from "lucide-react";
 import brandLogo from "./assets/brand-logo.jpg";
-import whatsappIcon from "./assets/whatsapp.png";
+import whatsappIcon from "./assets/whatsapp.png"; // floating white icon
 import tiktokIcon from "./assets/tiktok.png";
+import whatsappBlackIcon from "./assets/whatsapp-black.png"; // NEW: black icon for CTA button
 
 // --- Contact links ---
 const WHATSAPP_URL =
@@ -25,7 +26,7 @@ const initialVideos = [
   "https://drive.google.com/file/d/1oLYUGEtc6OlwDOA0F9ZxQBgVXsgHQB2Z/view?usp=sharing",
 ];
 
-// Robustly convert Drive links to embeddable preview URLs without tricky regex escapes
+// Convert Drive links to preview URLs (build-safe)
 function driveToEmbed(url) {
   if (!url) return "";
   try {
@@ -134,11 +135,12 @@ export default function FuturisticPortfolio() {
               rel="noreferrer"
               className={`group relative inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r ${gradient} text-black font-bold`}
             >
-              <MessageCircle className="h-5 w-5" /> {t.cta_brief}
+              <img src={whatsappBlackIcon} alt="WhatsApp" className="h-5 w-5 object-contain" />
+              {t.cta_brief}
               <span className="absolute -inset-px rounded-2xl blur-md bg-gradient-to-r from-fuchsia-500 via-pink-500 to-amber-400 -z-10 opacity-70 group-hover:opacity-90 transition" />
             </a>
             <a
-              href={"https://t.me/frame_surge"}
+              href={TELEGRAM_URL}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-white/20 hover:border-white/40 transition"
